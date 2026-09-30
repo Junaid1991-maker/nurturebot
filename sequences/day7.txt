@@ -1,0 +1,5 @@
+Hi {first_name},
+
+Just wanted to share: for {product}, we offer {capability}.
+
+If your buyers have similar requirements, happy to help. Any questions, just reply here.

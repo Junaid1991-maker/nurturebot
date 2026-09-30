@@ -1,0 +1,5 @@
+Salam {first_name},
+
+Hope all is well. A quick share on {product}: {insight}.
+
+Thought it might be useful for your {market_label} buyers. If anything is needed, just let me know 🙂

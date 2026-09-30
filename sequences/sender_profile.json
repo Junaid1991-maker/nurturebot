@@ -1,0 +1,14 @@
+{
+  "_readme": "Who the messages come FROM. For a real client, replace everything with their real details. The AI is only allowed to claim what is written in 'capabilities'.",
+  "is_demo": true,
+  "sender_name": "Junaid",
+  "company": "Karachi Terry Mills (Demo)",
+  "company_type": "Pakistani textile exporter based in Karachi",
+  "capabilities": {
+    "towels": "terry towels from 400 to 700 GSM with consistent weight across repeat orders, MOQ from 500 pieces",
+    "bed_linen": "bed linen from 200TC upwards with hotel-grade finishing, MOQ from 500 sets",
+    "knitwear": "knitwear with full fibre and factory traceability documentation, useful for EU buyers",
+    "garments": "woven and knit garments with flexible MOQs and export documentation handled end to end",
+    "default": "flexible MOQs, FOB Karachi shipping and export documentation handled end to end"
+  }
+}

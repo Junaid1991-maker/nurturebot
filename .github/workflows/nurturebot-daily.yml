@@ -1,0 +1,23 @@
+# Calls NurtureBot on Render every day at 9:00 AM Karachi (04:00 UTC).
+# Runs on GitHub's servers, so your laptop can be off.
+# Needs 2 repo secrets: NURTUREBOT_URL (https://nurturebot-api.onrender.com) and NURTUREBOT_API_KEY.
+name: NurtureBot daily run
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch: {}      # "Run workflow" button for testing
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wake Render (free tier sleeps)
+        run: |
+          for i in 1 2 3 4 5 6; do
+            curl -fsS "${{ secrets.NURTUREBOT_URL }}/ping" && break || sleep 20
+          done
+      - name: Run daily nurture
+        run: |
+          curl -fsS --max-time 900 -X POST \
+            -H "X-API-Key: ${{ secrets.NURTUREBOT_API_KEY }}" \
+            "${{ secrets.NURTUREBOT_URL }}/run-daily" | tee result.json
+          python3 -c "import json;r=json.load(open('result.json'));print('sent',r['sent'],'failed',r['failed']);exit(1 if r['failed'] else 0)"

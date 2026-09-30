@@ -1,0 +1,67 @@
+# Render Blueprint: two free web services from one GitHub repo.
+# Secrets (sync: false) are typed into the Render dashboard, never committed.
+services:
+  - type: web
+    name: nurturebot-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /ping
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: TIMEZONE
+        value: Asia/Karachi
+      - key: DEMO_MODE
+        value: "true"
+      - key: DEMO_WA_NUMBER
+        value: "+923183355708"
+      - key: ALERT_WA_NUMBER
+        value: "+923183355708"
+      - key: ALERT_EMAIL
+        value: junaid19tex@gmail.com
+      - key: WA_PHONE_NUMBER_ID
+        value: "1231512983369543"
+      - key: WA_API_VERSION
+        value: v23.0
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-120b
+      - key: GOOGLE_CREDENTIALS_PATH
+        value: /etc/secrets/credentials.json
+      - key: GOOGLE_SHEETS_ID
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: WA_ACCESS_TOKEN
+        sync: false
+      - key: WA_APP_SECRET
+        sync: false
+      - key: WA_VERIFY_TOKEN
+        sync: false
+      - key: API_KEY
+        sync: false
+      - key: GMAIL_ADDRESS
+        sync: false
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+
+  - type: web
+    name: nurturebot-dashboard
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run streamlit_app/app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: TIMEZONE
+        value: Asia/Karachi
+      - key: DEMO_MODE
+        value: "true"
+      - key: GOOGLE_CREDENTIALS_PATH
+        value: /etc/secrets/credentials.json
+      - key: GOOGLE_SHEETS_ID
+        sync: false
+      - key: DASHBOARD_PASSWORD
+        sync: false

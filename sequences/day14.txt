@@ -1,0 +1,5 @@
+{first_name}, hope you're doing well.
+
+I remember you were looking at {product}. Right now {timing}.
+
+If it's useful, we could do a quick 15-minute call and I can give you the full picture on specs, MOQ and lead time.

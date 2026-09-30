@@ -1,0 +1,80 @@
+{
+  "name": "NurtureBot Reply Handler",
+  "nodes": [
+    {
+      "parameters": { "httpMethod": "POST", "path": "whatsapp-inbound", "options": {} },
+      "name": "WhatsApp webhook (POST)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "nurturebot-wa-post"
+    },
+    {
+      "parameters": { "path": "whatsapp-inbound", "responseMode": "responseNode", "options": {} },
+      "name": "Meta verification (GET)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "nurturebot-wa-get"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query['hub.challenge'] }}",
+        "options": {}
+      },
+      "name": "Return challenge",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [300, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8007/incoming",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}",
+        "options": { "timeout": 120000 }
+      },
+      "name": "NurtureBot /incoming",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [300, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "typeValidation": "loose" },
+          "combinator": "and",
+          "conditions": [
+            {
+              "leftValue": "={{ $json.handled }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Handled by NurtureBot?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [600, 0]
+    },
+    {
+      "parameters": {},
+      "name": "Not a nurture lead → next agent (LeadHunterBot / Order Agent)",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [900, 100]
+    }
+  ],
+  "connections": {
+    "WhatsApp webhook (POST)": { "main": [ [ { "node": "NurtureBot /incoming", "type": "main", "index": 0 } ] ] },
+    "Meta verification (GET)": { "main": [ [ { "node": "Return challenge", "type": "main", "index": 0 } ] ] },
+    "NurtureBot /incoming": { "main": [ [ { "node": "Handled by NurtureBot?", "type": "main", "index": 0 } ] ] },
+    "Handled by NurtureBot?": { "main": [ [], [ { "node": "Not a nurture lead → next agent (LeadHunterBot / Order Agent)", "type": "main", "index": 0 } ] ] }
+  },
+  "settings": { "timezone": "Asia/Karachi", "executionOrder": "v1" }
+}

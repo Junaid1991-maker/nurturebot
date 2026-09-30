@@ -1,0 +1,5 @@
+Salam {first_name},
+
+Just a quick question: are you still exploring suppliers for {product}?
+
+If the timing isn't right at the moment, no problem at all. Just let me know either way 🙂
