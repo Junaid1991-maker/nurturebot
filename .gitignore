@@ -2,3 +2,4 @@
 credentials.json
 __pycache__/
 .pytest_cache/
+render_secrets.txt
