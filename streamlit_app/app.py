@@ -4,6 +4,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import pandas as pd  # noqa: E402
 import streamlit as st  # noqa: E402
 
 import config  # noqa: E402
@@ -23,6 +24,13 @@ if config.DASHBOARD_PASSWORD and not st.session_state.get("ok"):
         else:
             st.error("Wrong password")
     st.stop()
+
+
+def show(rows: list[dict]) -> None:
+    """Simple static table. Interactive tables lazy-load extra frontend code, which fails
+    on Render's free tier ("Network issue"); st.table is in Streamlit's core bundle."""
+    df = pd.DataFrame(rows).fillna("")
+    st.table(df.set_index(df.columns[0]))
 
 
 @st.cache_resource
@@ -65,23 +73,22 @@ t1, t2, t3 = st.tabs(["Active Queue", "🔥 HOT Upgrades", "Message Log"])
 with t1:
     rows = queue_table(queue, today)
     if rows:
-        st.dataframe(rows, use_container_width=True, hide_index=True)
+        show(rows)
     else:
         st.info("No leads yet. Add WARM leads with POST /add-lead.")
 with t2:
     if hot:
-        st.dataframe([{"When": h.get("Date"), "Name": h.get("Name"), "Company": h.get("Company"),
-                       "Phone": h.get("Phone"), "Replied to": f"Day {h.get('Day Upgraded')}",
-                       "Their reply": h.get("Reply Text"),
-                       "Handed to Order Agent": h.get("Handed to Order Agent (Y/N)"),
-                       "Outcome": h.get("Deal Outcome")} for h in reversed(hot)],
-                     use_container_width=True, hide_index=True)
+        show([{"When": h.get("Date"), "Name": h.get("Name"), "Company": h.get("Company"),
+               "Phone": h.get("Phone"), "Replied to": f"Day {h.get('Day Upgraded')}",
+               "Their reply": h.get("Reply Text"),
+               "Handed to Order Agent": h.get("Handed to Order Agent (Y/N)"),
+               "Outcome": h.get("Deal Outcome")} for h in reversed(hot)])
     else:
         st.info("No HOT upgrades yet.")
 with t3:
     rows = log_table(log)
     if rows:
-        st.dataframe(rows, use_container_width=True, hide_index=True)
+        show(rows)
     else:
         st.info("No messages yet.")
 
